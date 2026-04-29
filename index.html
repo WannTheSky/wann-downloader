@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>WANN DOWNLOADER - Developer Login</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="neon-container">
+    <div class="neon-box">
+      <h1 class="neon-title">🌌 WANN DOWNLOADER</h1>
+      <p style="text-align:center; color:#8090b0; margin-bottom:20px;">Developer Access Portal</p>
+      
+      <input 
+        type="text" 
+        id="usernameInput" 
+        class="neon-input" 
+        placeholder="🔑 Masukkan Username"
+        autocomplete="off"
+        onkeydown="if(event.key==='Enter') handleLogin()"
+      >
+      
+      <button class="neon-btn" onclick="handleLogin()">
+        ⚡ AKSES PORTAL
+      </button>
+      
+      <p id="errorMsg" class="error-msg"></p>
+    </div>
+  </div>
+
+  <!-- Firebase SDK -->
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js">
+  </script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js">
+  </script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js">
+  </script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-storage-compat.js">
+  </script>
+  
+  <script src="firebase-config.js"></script>
+  <script src="auth.js"></script>
+  
+  <script>
+    // Cek jika sudah login, langsung redirect
+    if (isLoggedIn()) {
+      window.location.href = 'dashboard.html';
+    }
+
+    const DEVELOPER_USERNAME = "WannTheClown";
+
+    // Pastikan akun developer ada di Firestore
+    async function ensureDeveloperExists() {
+      const usersRef = db.collection('users');
+      const snapshot = await usersRef.where('username', '==', DEVELOPER_USERNAME).get();
+      if (snapshot.empty) {
+        await usersRef.add({
+          username: DEVELOPER_USERNAME,
+          role: 'developer',
+          createdAt: firebase.firestore.FieldValue.serverTimestamp()
+        });
+        console.log('Developer account created');
+      }
+    }
+    ensureDeveloperExists();
+
+    async function handleLogin() {
+      const input = document.getElementById('usernameInput');
+      const errorEl = document.getElementById('errorMsg');
+      const btn = document.querySelector('.neon-btn');
+      
+      // Efek klik
+      btn.style.animation = 'pulse 0.5s ease';
+      setTimeout(() => { btn.style.animation = ''; }, 500);
+      
+      const username = input.value.trim();
+      
+      if (!username) {
+        errorEl.style.display = 'block';
+        errorEl.textContent = '⚠️ Masukkan username terlebih dahulu!';
+        return;
+      }
+      
+      // Cek di Firestore
+      const usersRef = db.collection('users');
+      const snapshot = await usersRef.where('username', '==', username).get();
+      
+      if (snapshot.empty) {
+        errorEl.style.display = 'block';
+        errorEl.textContent = '❌ Username tidak terdaftar!';
+        input.style.borderColor = '#ff4060';
+        input.style.boxShadow = '0 0 15px rgba(255,60,60,0.5)';
+        setTimeout(() => {
+          input.style.borderColor = '#0070cc';
+          input.style.boxShadow = '';
+        }, 1500);
+        return;
+      }
+      
+      // Login berhasil
+      errorEl.style.display = 'none';
+      const result = await loginUser(username);
+      
+      if (result.success) {
+        // Efek sukses
+        document.querySelector('.neon-box').style.boxShadow = 
+          '0 0 30px rgba(0,255,130,0.6), 0 0 60px rgba(0,200,100,0.4)';
+        setTimeout(() => {
+          window.location.href = 'dashboard.html';
+        }, 500);
+  <!-- STAR BACKGROUND -->
+<script>
+  // Membuat bintang-bintang di background
+  const starsContainer = document.createElement('div');
+  starsContainer.className = 'stars-container';
+  document.body.appendChild(starsContainer);
+  
+  for (let i = 0; i < 100; i++) {
+    const star = document.createElement('div');
+    star.className = 'star';
+    star.style.left = Math.random() * 100 + '%';
+    star.style.top = Math.random() * 100 + '%';
+    star.style.width = (Math.random() * 2.5 + 1) + 'px';
+    star.style.height = star.style.width;
+    star.style.setProperty('--duration', (Math.random() * 3 + 2) + 's');
+    star.style.setProperty('--delay', (Math.random() * 5) + 's');
+    starsContainer.appendChild(star);
+  }
+</script>
+</body>
+</html>

@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>GALAXY AI - Developer Dashboard</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="dashboard-container">
+    
+    <!-- Header dengan kredensial yang dipilih -->
+    <div class="top-header">
+      <h3>🌌 WANN DOWNLOADER DEVELOPER DASHBOARD</h3>
+      <p class="credential-display" id="headerCredential">
+        👤 <span id="headerUsername">-</span> | 🔑 <span id="headerPassword">-</span>
+      </p>
+      <button class="neon-btn small" onclick="openCredentialModal()" style="margin-top:8px;">
+        ⚙️ Atur Kredensial Header
+      </button>
+    </div>
+
+    <!-- Menu Grid -->
+    <div class="menu-grid">
+      <div class="menu-card" onclick="openAddUserModal()">
+        <div class="icon">👤➕</div>
+        <div class="label">TAMBAH USER</div>
+      </div>
+      
+      <div class="menu-card" onclick="openDeleteUserModal()">
+        <div class="icon">👤❌</div>
+        <div class="label">HAPUS USER</div>
+      </div>
+      
+      <div class="menu-card" onclick="openAddFileModal()">
+        <div class="icon">📁➕</div>
+        <div class="label">TAMBAH FILE</div>
+      </div>
+      
+      <div class="menu-card" onclick="window.location.reload()">
+        <div class="icon">🔄</div>
+        <div class="label">REFRESH</div>
+      </div>
+      
+      <div class="menu-card danger-card" onclick="logoutUser()">
+        <div class="icon">🚪</div>
+        <div class="label">LOGOUT</div>
+      </div>
+    </div>
+
+    <!-- File Grid (Halaman Utama) -->
+    <h2 class="neon-title" style="font-size:1.5em;">📂 FILE REPOSITORY</h2>
+    <div class="file-grid" id="fileGrid">
+      <p style="color:#8090b0; text-align:center; width:100%;">Memuat file...</p>
+    </div>
+  </div>
+
+  <!-- MODAL: Tambah User -->
+  <div class="modal-overlay" id="addUserModal">
+    <div class="modal-content">
+      <h3 style="color:#00d4ff; text-shadow:0 0 10px #00a8ff;">👤 Tambah User Baru</h3>
+      <input type="text" id="newUsername" class="neon-input" placeholder="Username baru">
+      <div class="btn-group">
+        <button class="neon-btn success" onclick="addUser()">✅ Simpan</button>
+        <button class="neon-btn danger" onclick="closeModal('addUserModal')">❌ Batal</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL: Hapus User -->
+  <div class="modal-overlay" id="deleteUserModal">
+    <div class="modal-content">
+      <h3 style="color:#ff6040; text-shadow:0 0 10px #ff4040;">🗑️ Hapus User</h3>
+      <select id="userSelect" class="neon-input">
+        <option value="">-- Pilih User --</option>
+      </select>
+      <div class="btn-group">
+        <button class="neon-btn danger" onclick="deleteUser()">🗑️ Hapus</button>
+        <button class="neon-btn" onclick="closeModal('deleteUserModal')">❌ Batal</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL: Tambah File -->
+  <div class="modal-overlay" id="addFileModal">
+    <div class="modal-content" style="max-width:550px;">
+      <h3 style="color:#00d4ff; text-shadow:0 0 10px #00a8ff;">📁 Upload File Baru</h3>
+      <label style="color:#8090b0;">📸 Foto File (dari galeri):</label>
+      <input type="file" id="fileImage" class="neon-input" accept="image/*">
+      <label style="color:#8090b0;">📄 File (dari file manager):</label>
+      <input type="file" id="fileData" class="neon-input">
+      <label style="color:#8090b0;">📝 Nama File:</label>
+      <input type="text" id="fileName" class="neon-input" placeholder="Nama file...">
+      <div class="btn-group">
+        <button class="neon-btn success" onclick="saveFile()">💾 Save</button>
+        <button class="neon-btn danger" onclick="closeModal('addFileModal')">❌ Cancel</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL: Edit File -->
+  <div class="modal-overlay" id="editFileModal">
+    <div class="modal-content" style="max-width:550px;">
+      <h3 style="color:#ffcc00; text-shadow:0 0 10px #ffaa00;">✏️ Edit File</h3>
+      <input type="hidden" id="editFileId">
+      <label style="color:#8090b0;">📸 Foto Baru (opsional):</label>
+      <input type="file" id="editFileImage" class="neon-input" accept="image/*">
+      <label style="color:#8090b0;">📄 File Baru (opsional):</label>
+      <input type="file" id="editFileData" class="neon-input">
+      <label style="color:#8090b0;">📝 Nama File:</label>
+      <input type="text" id="editFileName" class="neon-input" placeholder="Nama file...">
+      <div class="btn-group">
+        <button class="neon-btn success" onclick="updateFile()">💾 Update</button>
+        <button class="neon-btn danger" onclick="closeModal('editFileModal')">❌ Cancel</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL: Atur Kredensial Header -->
+  <div class="modal-overlay" id="credentialModal">
+    <div class="modal-content">
+      <h3 style="color:#ffcc00; text-shadow:0 0 10px #ffaa00;">⚙️ Atur Kredensial Header</h3>
+      <select id="credentialUserSelect" class="neon-input">
+        <option value="">-- Pilih User --</option>
+      </select>
+      <label style="color:#8090b0;">🔑 Password untuk ditampilkan:</label>
+      <input type="text" id="credentialPassword" class="neon-input" placeholder="Password...">
+      <div class="btn-group">
+        <button class="neon-btn success" onclick="saveCredential()">💾 Simpan</button>
+        <button class="neon-btn danger" onclick="closeModal('credentialModal')">❌ Batal</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Firebase SDK -->
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js">
+  </script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js">
+  </script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js">
+  </script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-storage-compat.js">
+  </script>
+  
+  <script src="firebase-config.js"></script>
+  <script src="auth.js"></script>
+  <script src="dashboard.js"></script>
+  <!-- STAR BACKGROUND -->
+<script>
+  // Membuat bintang-bintang di background
+  const starsContainer = document.createElement('div');
+  starsContainer.className = 'stars-container';
+  document.body.appendChild(starsContainer);
+  
+  for (let i = 0; i < 100; i++) {
+    const star = document.createElement('div');
+    star.className = 'star';
+    star.style.left = Math.random() * 100 + '%';
+    star.style.top = Math.random() * 100 + '%';
+    star.style.width = (Math.random() * 2.5 + 1) + 'px';
+    star.style.height = star.style.width;
+    star.style.setProperty('--duration', (Math.random() * 3 + 2) + 's');
+    star.style.setProperty('--delay', (Math.random() * 5) + 's');
+    starsContainer.appendChild(star);
+  }
+</script>
+</body>
+</html>
